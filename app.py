@@ -9,8 +9,17 @@ import time
 auth_token = "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"
 MaskedLM_ckpt='roberta-large'
 NER_tag_list = ['ORG']
-tagger = SequenceTagger.load('ner')
-MaskedLM_tok = AutoTokenizer.from_pretrained(MaskedLM_ckpt)
+
+@st.cache_resource
+def load_seq_tagger():
+    return SequenceTagger.load('ner')
+
+@st.cache_resource
+def load_tokenizer(MaskedLM_ckpt):
+    return AutoTokenizer.from_pretrained(MaskedLM_ckpt)
+
+tagger = load_seq_tagger()
+MaskedLM_tok = load_tokenizer(MaskedLM_ckpt)
 headers = {"Authorization": f"Bearer {auth_token}"}
 
 API_URL_MLM = "https://api-inference.huggingface.co/models/FacebookAI/roberta-large"
